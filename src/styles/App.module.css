@@ -1,0 +1,8 @@
+.kicker { margin: 0; color: var(--muted); font-size: 0.85rem; font-weight: 600; }
+h1 { margin: 4px 0 0; font-size: 1.5rem; line-height: 1.3; }
+.progress { color: var(--muted); margin: 4px 0 0; font-size: 0.9rem; }
+.coach { background: var(--primary-soft); padding: 14px; border-radius: 12px; text-align: center; font-weight: 600; min-height: 72px; display: grid; place-items: center; }
+.choices { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.primary { width: 100%; border: none; background: var(--primary); color: #fff; border-radius: 14px; padding: 14px; min-height: 52px; font-weight: 700; }
+.badges { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 0.85rem; }
+@media (max-width: 360px) { .choices { grid-template-columns: 1fr; } }

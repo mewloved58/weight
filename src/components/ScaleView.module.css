@@ -1,0 +1,6 @@
+.wrap { padding: 12px 0 4px; }
+.board { display: grid; grid-template-columns: 1fr 24px 1fr; align-items: center; background: #8b6b4a; color: #fff; border-radius: 999px; padding: 12px 16px; transition: transform 280ms ease; }
+.pivot { width: 24px; height: 24px; background: #5e452e; border-radius: 50%; }
+.side { text-align: center; font-size: 2rem; }
+.leftHeavy { transform: rotate(-6deg); }
+.rightHeavy { transform: rotate(6deg); }
