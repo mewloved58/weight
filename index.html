@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>크기 탐험대 - 무게 비교</title>
+  <style>
+    :root{--bg:#f5f7fb;--surface:#fff;--line:#dbe2ee;--text:#1f2937;--muted:#667085;--primary:#2f6fed;--primarySoft:#e8f0ff;--radius:16px}
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,'Noto Sans KR',sans-serif;background:var(--bg);color:var(--text)}
+    .app{max-width:460px;margin:0 auto;min-height:100dvh;padding:16px;display:grid;gap:12px;grid-template-rows:auto 1fr auto}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)} header,main,footer{padding:14px}
+    h1{margin:4px 0;font-size:1.45rem}.kicker,.sub{margin:0;color:var(--muted);font-size:.9rem}
+    .steps{display:flex;gap:8px}.step{flex:1;text-align:center;padding:8px;border-radius:10px;background:#eef2f8;color:var(--muted);font-size:.82rem}.step.active{background:var(--primary);color:#fff;font-weight:700}
+    .scale{margin-top:10px;display:grid;gap:10px}.seesaw-wrap{background:#f9fbff;border:1px solid #e3e8f4;border-radius:14px;padding:8px}
+    #beamGroup{transform-origin:160px 130px;transition:transform .45s cubic-bezier(.2,.8,.2,1)} .tiltL{transform:rotate(-8deg)} .tiltR{transform:rotate(8deg)}
+    .leftToken,.rightToken{font-size:22px;font-weight:700}
+    .drop{min-height:46px;border:2px dashed #c8d2e3;border-radius:10px;display:grid;place-items:center;color:var(--muted);font-size:.9rem}
+    .coach{margin:12px 0;background:var(--primarySoft);border-radius:12px;padding:12px;text-align:center;font-weight:600;min-height:70px;display:grid;place-items:center}
+    .choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}.item{border:2px solid var(--line);background:#fff;border-radius:12px;min-height:110px;padding:12px;display:grid;place-items:center;gap:4px}
+    .item.selected{border-color:var(--primary);background:var(--primarySoft)} .emoji{font-size:2.1rem;font-weight:700}
+    .badges{display:flex;justify-content:space-between;color:var(--muted);font-size:.84rem;margin-top:10px}ul{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:.9rem;display:grid;gap:4px}
+    button{font:inherit}.next{width:100%;border:none;background:var(--primary);color:#fff;border-radius:12px;padding:14px;min-height:50px;font-weight:700}
+  </style>
+</head>
+<body>
+<div class="app">
+  <header class="card"><p class="kicker">크기 탐험대</p><h1>무게 비교 놀이</h1><p class="sub" id="sessionLabel">세션 1</p></header>
+  <main class="card">
+    <div class="steps" id="steps"></div>
+    <section class="scale" aria-label="저울 영역">
+      <div class="seesaw-wrap">
+        <svg viewBox="0 0 320 190" width="100%" role="img" aria-label="시소 저울">
+          <defs>
+            <linearGradient id="beamGrad" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#7f6548"/><stop offset="1" stop-color="#5e452e"/></linearGradient>
+          </defs>
+          <g id="beamGroup">
+            <rect x="42" y="120" rx="10" ry="10" width="236" height="20" fill="url(#beamGrad)"/>
+            <path d="M70 140 Q70 160 90 164" stroke="#8ea2c7" stroke-width="2" fill="none"/>
+            <path d="M250 140 Q250 160 230 164" stroke="#8ea2c7" stroke-width="2" fill="none"/>
+            <text x="90" y="174" text-anchor="middle" id="leftEmoji" class="leftToken">🧴</text>
+            <text x="230" y="174" text-anchor="middle" id="rightEmoji" class="rightToken">🎈</text>
+          </g>
+          <polygon points="160,84 134,122 186,122" fill="#445066"/>
+          <rect x="122" y="122" width="76" height="10" rx="5" fill="#55627a"/>
+        </svg>
+      </div>
+      <div class="drop" id="dropZone">여기에 더 무거운 물건 카드를 놓아요</div>
+    </section>
+    <p class="coach" id="coach"></p>
+    <div class="choices" id="choices"></div>
+    <div class="badges"><span id="score">정답 0/0</span><span id="status">다음 행동 준비 완료</span></div>
+    <section style="margin-top:12px;border-top:1px solid var(--line);padding-top:10px"><strong>부모 리포트</strong><ul><li id="acc">정확도: 0% (0/0)</li><li id="retry">재도전 횟수: 0회</li><li id="focus">이번 학습 포인트: -</li><li>권장 활동: 집에서 비슷한 물건 2개를 직접 들어보세요.</li></ul></section>
+  </main>
+  <footer class="card"><button class="next" id="nextBtn">다음 활동</button></footer>
+</div>
+<script>
+const CONTENT={progression:[{id:'predict',title:'예측',coach:'더 무거운 물건을 고르세요.'},{id:'observe',title:'관찰',coach:'시소 기울기를 확인해요.'},{id:'reflect',title:'강화',coach:'왜 더 무거운지 힌트를 읽어요.'}],sessions:[{pair:[{id:'water-bottle',label:'물병',emoji:'🧴',w:3,hint:'물이 들어 있으면 더 무거워져요.'},{id:'balloon',label:'풍선',emoji:'🎈',w:1,hint:'공기는 가벼워요.'}],focus:'크기와 무게는 달라요'},{pair:[{id:'book',label:'그림책',emoji:'📘',w:5,hint:'페이지가 많으면 무거워져요.'},{id:'apple',label:'사과',emoji:'🍎',w:2,hint:'작아도 묵직할 수 있어요.'}],focus:'재질에 따라 무게가 달라요'}]};
+const S={session:0,phase:'predict',selected:null,attempts:0,correct:0,retry:0};
+const el=id=>document.getElementById(id);
+function current(){return CONTENT.sessions[S.session%CONTENT.sessions.length]} function heavier(pair){return pair[0].w>=pair[1].w?pair[0]:pair[1]}
+function render(){const c=current(),p=c.pair,h=heavier(p);el('sessionLabel').textContent=`세션 ${S.session+1}`;el('leftEmoji').textContent=p[0].emoji;el('rightEmoji').textContent=p[1].emoji;
+ const beam=el('beamGroup');beam.classList.remove('tiltL','tiltR');if(S.phase==='reflect')beam.classList.add(h.id===p[0].id?'tiltL':'tiltR');
+ el('steps').innerHTML=CONTENT.progression.map(s=>`<div class="step ${s.id===S.phase?'active':''}">${s.title}</div>`).join('');
+ el('coach').textContent=S.phase==='predict'?CONTENT.progression[0].coach:S.phase==='observe'?CONTENT.progression[1].coach:(S.selected===h.id?`정답! ${h.label}이 더 무거워요.`:`다시 보기: ${h.hint}`);
+ el('dropZone').textContent=S.selected?'선택 완료':'여기에 더 무거운 물건 카드를 놓아요';
+ el('choices').innerHTML=p.map(i=>`<button class="item ${S.selected===i.id?'selected':''}" data-id="${i.id}" ${S.phase!=='predict'?'disabled':''} draggable="${S.phase==='predict'}"><span class="emoji">${i.emoji}</span><span>${i.label}</span></button>`).join('');
+ el('score').textContent=`정답 ${S.correct}/${S.attempts}`;el('status').textContent=S.phase==='observe'?'결과 확인 중...':'다음 행동 준비 완료';
+ const acc=S.attempts?Math.round(S.correct/S.attempts*100):0;el('acc').textContent=`정확도: ${acc}% (${S.correct}/${S.attempts})`;el('retry').textContent=`재도전 횟수: ${S.retry}회`;el('focus').textContent=`이번 학습 포인트: ${c.focus}`;
+ document.querySelectorAll('.item').forEach(b=>{b.onclick=()=>pick(b.dataset.id);b.ondragstart=e=>{e.dataTransfer.setData('text/plain',b.dataset.id);pick(b.dataset.id);};});}
+function pick(id){if(S.phase!=='predict')return;S.selected=id;S.phase='observe';render();setTimeout(()=>{const h=heavier(current().pair);S.phase='reflect';S.attempts++;if(S.selected===h.id)S.correct++;else S.retry++;render();},650)}
+el('dropZone').ondragover=e=>e.preventDefault();el('dropZone').ondrop=e=>{e.preventDefault();const id=e.dataTransfer.getData('text/plain');if(id)pick(id);};
+el('nextBtn').onclick=()=>{S.session++;S.phase='predict';S.selected=null;render();};render();
+</script>
+</body>
+</html>
