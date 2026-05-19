@@ -1,7 +1,0 @@
-.section { display: grid; gap: 12px; }
-.board { display: grid; grid-template-columns: 1fr 24px 1fr; align-items: center; background: #8b6b4a; color: #fff; border-radius: 999px; padding: 12px 16px; transition: transform 260ms ease; }
-.pivot { width: 24px; height: 24px; background: #5e452e; border-radius: 50%; }
-.slot { text-align: center; font-size: 2rem; }
-.leftHeavy { transform: rotate(-6deg); }
-.rightHeavy { transform: rotate(6deg); }
-.dropZone { border: 2px dashed #cbd5e1; border-radius: 12px; min-height: 48px; display: grid; place-items: center; color: var(--muted); font-size: 0.9rem; }

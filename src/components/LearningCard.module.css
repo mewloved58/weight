@@ -1,6 +1,0 @@
-.card { border: 2px solid #d1d5db; background: #fff; border-radius: 14px; padding: 14px 10px; min-height: 112px; display: grid; place-items: center; gap: 4px; touch-action: manipulation; }
-.card:active { transform: scale(0.98); }
-.card:focus-visible { outline: 3px solid #93c5fd; outline-offset: 2px; }
-.picked { border-color: var(--primary); background: var(--primary-soft); }
-.emoji { font-size: 2.2rem; }
-.label { font-weight: 700; }

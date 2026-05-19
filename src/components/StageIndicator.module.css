@@ -1,4 +1,0 @@
-.row { display: flex; gap: 8px; }
-.item, .active { flex: 1; text-align: center; border-radius: 10px; padding: 8px 6px; font-size: 0.82rem; }
-.item { background: #eef1f7; color: var(--muted); }
-.active { background: var(--primary); color: #fff; font-weight: 700; }
